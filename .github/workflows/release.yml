@@ -1,0 +1,57 @@
+name: Create Release
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'src/**'
+      - 'examples/**'
+      - 'BUILD.bat'
+      - 'CMakeLists.txt'
+
+jobs:
+  build:
+    runs-on: windows-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up MSVC
+      uses: microsoft/setup-msbuild@v1.1
+      
+    - name: Build
+      run: |
+        ./BUILD.bat
+        
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: v0.1.0-alpha.${{ github.run_number }}
+        release_name: Alpha Release ${{ github.run_number }}
+        body: |
+          Alpha release of ECPP Language
+          
+          Changes in this build:
+          - Automated release from main branch
+          - Build number: ${{ github.run_number }}
+          
+          Features:
+          - Basic function declarations and calls
+          - Variable declarations
+          - Print statements
+          - Basic arithmetic operations
+        draft: false
+        prerelease: true
+        
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./build/ecpp.exe
+        asset_name: ecpp.exe
+        asset_content_type: application/octet-stream

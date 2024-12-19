@@ -8,7 +8,12 @@ on:
       - 'examples/**'
       - 'BUILD.bat'
       - 'CMakeLists.txt'
-  workflow_dispatch:  # Allows manual trigger
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  packages: write
+  actions: write
 
 jobs:
   build:
@@ -16,6 +21,8 @@ jobs:
     
     steps:
     - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
     
     - name: Set up MSVC
       uses: microsoft/setup-msbuild@v1.1
@@ -29,9 +36,9 @@ jobs:
       run: |
         $releases = gh release list
         if ($releases -eq $null -or $releases.Count -eq 0) {
-          echo "::set-output name=exists::false"
+          echo "exists=false" >> $env:GITHUB_OUTPUT
         } else {
-          echo "::set-output name=exists::true"
+          echo "exists=true" >> $env:GITHUB_OUTPUT
         }
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

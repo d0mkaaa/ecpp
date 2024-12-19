@@ -2,6 +2,15 @@
 
 ECPP (EC++ / Easy C++) is a minimalistic programming language implemented in C++. It features basic programming constructs like functions, variables, and arithmetic operations.
 
+## Version History
+
+### v0.1.0-alpha
+- Initial release
+- Basic function support
+- Variable declarations
+- Print statements
+- Basic arithmetic (+, -)
+
 ## Features
 
 - Function declarations and calls
